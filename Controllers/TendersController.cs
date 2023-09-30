@@ -89,6 +89,7 @@ namespace Tenders_Quotations.Controllers
           {
               return Problem("Entity set 'TenderQuotationsContext.Tenders'  is null.");
           }
+
             _context.Tenders.Add(tender);
             await _context.SaveChangesAsync();
 
