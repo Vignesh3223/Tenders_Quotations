@@ -90,9 +90,11 @@ namespace Tenders_Quotations.Controllers
               return Problem("Entity set 'TenderQuotationsContext.Tenders'  is null.");
           }
 
+            int? categoryId = (int?) tender.CategoryId;
+            tender.TenderOpeningDate = DateTime.Now;
+            tender.TenderClosingDate = DateTime.Now.AddDays(30);
             _context.Tenders.Add(tender);
             await _context.SaveChangesAsync();
-
             return CreatedAtAction("GetTender", new { id = tender.TenderId }, tender);
         }
 
