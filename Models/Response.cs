@@ -4,6 +4,7 @@
     {
         public string? Status {  get; set; }
         public string? Message { get; set;}
+        public int? Userid { get;set; }
         public string? Companyname { get; set; }    
         public string? Proprieator { get; set; }
         public string? Email { get; set; }
@@ -15,5 +16,6 @@
         public int? Crn { get; set; }
         public int? RoleId { get; set; }
         public string? Token { get; set; }
+        public string? Rolename { get; set; }
     }
 }

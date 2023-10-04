@@ -27,7 +27,8 @@ public partial class TenderQuotationsContext : DbContext
 
     public virtual DbSet<User> Users { get; set; }
 
- public virtual DbSet<Currentuser> Currentusers { get; set; }   
+    public virtual DbSet<Currentuser> Currentusers { get; set; }   
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Category>(entity =>

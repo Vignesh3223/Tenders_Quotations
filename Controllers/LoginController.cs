@@ -47,6 +47,7 @@ namespace Tenders_Quotations.Controllers
                     {
                         Status = "Success",
                         Message = "Login Successfully",
+                        Userid = user.UserId,
                         Companyname = user.CompanyName,
                         Proprieator = user.Proprieator,
                         Email = user.Email,
@@ -57,7 +58,7 @@ namespace Tenders_Quotations.Controllers
                         Gstin = user.Gstin,
                         Crn = user.Crn,
                         RoleId = user.RoleId,
-                        Token = user.Token
+                        Token = user.Token,
                     };
                     return Ok(response1);
             }
@@ -91,20 +92,21 @@ namespace Tenders_Quotations.Controllers
             }
 
             var key = "Yh2k7QSu4l8CZg5p6X3Pna9L0Miy4D3Bvt0JVr87UcOj69Kqw5R2Nmf4FWs03Hdx";
-            var creds = new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key)), SecurityAlgorithms.HmacSha256);
 
             var claims = new List<Claim>
             {
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new Claim(ClaimTypes.Name, user.CompanyName),
                 new Claim(ClaimTypes.Role, userRole),
             };
 
+            var creds = new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key)), SecurityAlgorithms.HmacSha256);
             var token = new JwtSecurityToken(
                 issuer: "JWTAuthenticationServer",
                 audience: "JWTServicePostmanClient",
                 claims: claims,
                 expires: DateTime.Now.AddDays(1),
-                signingCredentials: creds);
+                signingCredentials: creds
+            );
 
             var jwtToken = new JwtSecurityTokenHandler().WriteToken(token);
             user.Token=jwtToken;

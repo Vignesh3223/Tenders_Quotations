@@ -24,10 +24,10 @@ namespace Tenders_Quotations.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Quotation>>> GetQuotations()
         {
-          if (_context.Quotations == null)
-          {
-              return NotFound();
-          }
+            if (_context.Quotations == null)
+            {
+                return NotFound();
+            }
             return await _context.Quotations.ToListAsync();
         }
 
@@ -35,10 +35,10 @@ namespace Tenders_Quotations.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Quotation>> GetQuotation(int id)
         {
-          if (_context.Quotations == null)
-          {
-              return NotFound();
-          }
+            if (_context.Quotations == null)
+            {
+                return NotFound();
+            }
             var quotation = await _context.Quotations.FindAsync(id);
 
             if (quotation == null)
@@ -83,12 +83,9 @@ namespace Tenders_Quotations.Controllers
         // POST: api/Quotations
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Quotation>> PostQuotation(Quotation quotation)
+        public async Task<ActionResult<Quotation>> PostQuotation([FromBody] Quotation quotation)
         {
-          if (_context.Quotations == null)
-          {
-              return Problem("Entity set 'TenderQuotationsContext.Quotations'  is null.");
-          }
+            quotation.QuotedDate = DateTime.Now;
             _context.Quotations.Add(quotation);
             await _context.SaveChangesAsync();
 

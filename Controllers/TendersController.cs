@@ -85,11 +85,6 @@ namespace Tenders_Quotations.Controllers
         [HttpPost]
         public async Task<ActionResult<Tender>> PostTender(Tender tender)
         {
-          if (_context.Tenders == null)
-          {
-              return Problem("Entity set 'TenderQuotationsContext.Tenders'  is null.");
-          }
-
             int? categoryId = (int?) tender.CategoryId;
             tender.TenderOpeningDate = DateTime.Now;
             tender.TenderClosingDate = DateTime.Now.AddDays(30);
