@@ -29,6 +29,12 @@ public partial class Quotation
 
     public int? QuoteAmount { get; set; }
 
+    public string? EstablishedDate { get; set; }
+
+    public int? ProjectValue { get; set; }
+
+    public string? Email { get; set; }
+
     public virtual Tender? Tender { get; set; }
 
     public virtual ICollection<TendersTaken> TendersTakens { get; set; } = new List<TendersTaken>();

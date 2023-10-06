@@ -16,6 +16,6 @@
         public int? Crn { get; set; }
         public int? RoleId { get; set; }
         public string? Token { get; set; }
-        public string? Rolename { get; set; }
+        public string? ProfilePic { get; set; }
     }
 }

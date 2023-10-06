@@ -31,7 +31,11 @@ public partial class Tender
 
     public int? ApplicationFee { get; set; }
 
+    public bool? IsTaken { get; set; }
+
     public virtual Category? Category { get; set; }
 
     public virtual ICollection<Quotation> Quotations { get; set; } = new List<Quotation>();
+
+    public virtual ICollection<TendersTaken> TendersTakens { get; set; } = new List<TendersTaken>();
 }

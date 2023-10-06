@@ -15,6 +15,8 @@ public partial class TenderQuotationsContext : DbContext
     {
     }
 
+    public virtual DbSet<Ad> Ads { get; set; }
+
     public virtual DbSet<Category> Categories { get; set; }
 
     public virtual DbSet<Quotation> Quotations { get; set; }
@@ -27,10 +29,22 @@ public partial class TenderQuotationsContext : DbContext
 
     public virtual DbSet<User> Users { get; set; }
 
-    public virtual DbSet<Currentuser> Currentusers { get; set; }   
+    public virtual DbSet<Currentuser> Currentusers { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<Ad>(entity =>
+        {
+            entity.HasKey(e => e.AdId).HasName("PK__Ads__7130D5AEEBCB0ECA");
+
+            entity.Property(e => e.AdPoster)
+                .HasMaxLength(150)
+                .IsUnicode(false);
+            entity.Property(e => e.AdTitle)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+        });
+
         modelBuilder.Entity<Category>(entity =>
         {
             entity.HasKey(e => e.CategoryId).HasName("PK__Category__19093A0BFEFEB42F");
@@ -51,6 +65,12 @@ public partial class TenderQuotationsContext : DbContext
                 .IsUnicode(false);
             entity.Property(e => e.CompanyName)
                 .HasMaxLength(60)
+                .IsUnicode(false);
+            entity.Property(e => e.Email)
+                .HasMaxLength(75)
+                .IsUnicode(false);
+            entity.Property(e => e.EstablishedDate)
+                .HasMaxLength(20)
                 .IsUnicode(false);
             entity.Property(e => e.Location)
                 .HasMaxLength(50)
@@ -93,6 +113,7 @@ public partial class TenderQuotationsContext : DbContext
             entity.Property(e => e.Description)
                 .HasMaxLength(500)
                 .IsUnicode(false);
+            entity.Property(e => e.IsTaken).HasDefaultValueSql("((0))");
             entity.Property(e => e.Location)
                 .HasMaxLength(50)
                 .IsUnicode(false);
@@ -116,13 +137,16 @@ public partial class TenderQuotationsContext : DbContext
         {
             entity.HasKey(e => e.TakenId).HasName("PK__TendersT__D3CA0B74407E1241");
 
-            entity.ToTable("TendersTaken");
+            entity.ToTable("TendersTaken", tb => tb.HasTrigger("TenderGiven"));
 
             entity.Property(e => e.Authority)
                 .HasMaxLength(150)
                 .IsUnicode(false);
             entity.Property(e => e.CompanyName)
                 .HasMaxLength(60)
+                .IsUnicode(false);
+            entity.Property(e => e.Email)
+                .HasMaxLength(75)
                 .IsUnicode(false);
             entity.Property(e => e.Location)
                 .HasMaxLength(50)
@@ -139,6 +163,10 @@ public partial class TenderQuotationsContext : DbContext
             entity.HasOne(d => d.Quotation).WithMany(p => p.TendersTakens)
                 .HasForeignKey(d => d.QuotationId)
                 .HasConstraintName("FK__TendersTa__Quota__4F7CD00D");
+
+            entity.HasOne(d => d.Tender).WithMany(p => p.TendersTakens)
+                .HasForeignKey(d => d.TenderId)
+                .HasConstraintName("FK__TendersTa__Tende__01142BA1");
         });
 
         modelBuilder.Entity<User>(entity =>
@@ -174,6 +202,7 @@ public partial class TenderQuotationsContext : DbContext
             entity.Property(e => e.Password)
                 .HasMaxLength(100)
                 .IsUnicode(false);
+            entity.Property(e => e.ProfilePic).HasMaxLength(200);
             entity.Property(e => e.Proprieator)
                 .HasMaxLength(30)
                 .IsUnicode(false);

@@ -25,5 +25,13 @@ public partial class TendersTaken
 
     public DateTime? ProjectEndDate { get; set; }
 
+    public int? TenderId { get; set; }
+
+    public int? ProjectValue { get; set; }
+
+    public string? Email { get; set; }
+
     public virtual Quotation? Quotation { get; set; }
+
+    public virtual Tender? Tender { get; set; }
 }

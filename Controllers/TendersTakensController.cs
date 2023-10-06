@@ -2,14 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Tenders_Quotations.Models;
+using MimeKit;
+using MailKit.Net.Smtp;
 
 namespace Tenders_Quotations.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
     public class TendersTakensController : ControllerBase
     {
@@ -24,10 +27,10 @@ namespace Tenders_Quotations.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<TendersTaken>>> GetTendersTakens()
         {
-          if (_context.TendersTakens == null)
-          {
-              return NotFound();
-          }
+            if (_context.TendersTakens == null)
+            {
+                return NotFound();
+            }
             return await _context.TendersTakens.ToListAsync();
         }
 
@@ -35,10 +38,10 @@ namespace Tenders_Quotations.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<TendersTaken>> GetTendersTaken(int id)
         {
-          if (_context.TendersTakens == null)
-          {
-              return NotFound();
-          }
+            if (_context.TendersTakens == null)
+            {
+                return NotFound();
+            }
             var tendersTaken = await _context.TendersTakens.FindAsync(id);
 
             if (tendersTaken == null)
@@ -83,12 +86,8 @@ namespace Tenders_Quotations.Controllers
         // POST: api/TendersTakens
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<TendersTaken>> PostTendersTaken(TendersTaken tendersTaken)
+        public async Task<ActionResult<TendersTaken>> PostTendersTaken([FromBody]TendersTaken tendersTaken)
         {
-          if (_context.TendersTakens == null)
-          {
-              return Problem("Entity set 'TenderQuotationsContext.TendersTakens'  is null.");
-          }
             _context.TendersTakens.Add(tendersTaken);
             await _context.SaveChangesAsync();
 
@@ -118,6 +117,55 @@ namespace Tenders_Quotations.Controllers
         private bool TendersTakenExists(int id)
         {
             return (_context.TendersTakens?.Any(e => e.TakenId == id)).GetValueOrDefault();
+        }
+
+        [HttpPost("SendMail")]
+        public ActionResult SendMail([FromBody] EmailResponse emailresponse)
+        {
+            if (ModelState.IsValid)
+            {
+                if (emailresponse == null)
+                {
+                    return BadRequest("Invalid request");
+                }
+                try
+                {
+                    var message = new MimeMessage();
+                    message.From.Add(new MailboxAddress("VIGNESH", "20bsca150vigneshr@skacas.ac.in"));
+                    message.To.Add(MailboxAddress.Parse(emailresponse.Email));
+                    message.Subject = "TENDER CONFIRMATION";
+                    var text = new TextPart("plain")
+                    {
+                        Text = $@"Congratulations {emailresponse.CompanyName} , the tender {emailresponse.TenderName} has been granted to you..
+                        Tender Details:
+                        Tender Name : {emailresponse.TenderName}
+                        Location : {emailresponse.Location}
+                        Authority : {emailresponse.Authority}
+                        Project Value : {emailresponse.ProjectValue}
+                        Project Start Date : {emailresponse.ProjectStartDate}
+                        Project End Date : {emailresponse.ProjectEndDate}
+                        We expect a great determination and hard work towards the project , All the Best...",
+                    };
+                    var multipart = new Multipart("mixed")
+                    {
+                        text
+                    };
+                    message.Body = multipart;
+                    using (var client = new SmtpClient())
+                    {
+                        client.Connect("smtp.gmail.com", 587, false);
+                        client.Authenticate("20bsca150vigneshr@skacas.ac.in", "welcome123");
+                        client.Send(message);
+                        client.Disconnect(true);
+                    }
+                    return new JsonResult(new { message = "Email sent Successfully" });
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(ex.Message);
+                }
+            }
+            return Content("Send Email method executed");
         }
     }
 }

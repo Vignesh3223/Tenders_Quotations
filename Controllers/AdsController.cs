@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -12,57 +11,55 @@ namespace Tenders_Quotations.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
-
-    public class UsersController : ControllerBase
+    public class AdsController : ControllerBase
     {
         private readonly TenderQuotationsContext _context;
 
-        public UsersController(TenderQuotationsContext context)
+        public AdsController(TenderQuotationsContext context)
         {
             _context = context;
         }
 
-
-        // GET: api/Users
+        // GET: api/Ads
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<User>>> GetUsers()
+        public async Task<ActionResult<IEnumerable<Ad>>> GetAds()
         {
-          if (_context.Users == null)
+          if (_context.Ads == null)
           {
               return NotFound();
           }
-            return await _context.Users.ToListAsync();
+            return await _context.Ads.ToListAsync();
         }
 
-        // GET: api/Users/5
+        // GET: api/Ads/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<User>> GetUser(int id)
+        public async Task<ActionResult<Ad>> GetAd(int id)
         {
-          if (_context.Users == null)
+          if (_context.Ads == null)
           {
               return NotFound();
           }
-            var user = await _context.Users.FindAsync(id);
+            var ad = await _context.Ads.FindAsync(id);
 
-            if (user == null)
+            if (ad == null)
             {
                 return NotFound();
             }
 
-            return user;
+            return ad;
         }
 
-        // PUT: api/Users/5
+        // PUT: api/Ads/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutUser(int id, User user)
+        public async Task<IActionResult> PutAd(int id, Ad ad)
         {
-            if (id != user.UserId)
+            if (id != ad.AdId)
             {
                 return BadRequest();
             }
 
-            _context.Entry(user).State = EntityState.Modified;
+            _context.Entry(ad).State = EntityState.Modified;
 
             try
             {
@@ -70,7 +67,7 @@ namespace Tenders_Quotations.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!UserExists(id))
+                if (!AdExists(id))
                 {
                     return NotFound();
                 }
@@ -83,47 +80,44 @@ namespace Tenders_Quotations.Controllers
             return NoContent();
         }
 
-        // POST: api/Users
+        // POST: api/Ads
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<User>> PostUser([FromBody]User user)
+        public async Task<ActionResult<Ad>> PostAd(Ad ad)
         {
-            try
-            {
-                user.RoleId = 2;
-                _context.Users.Add(user);
-                await _context.SaveChangesAsync();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            return CreatedAtAction("GetUser", new { id = user.UserId }, user);
+          if (_context.Ads == null)
+          {
+              return Problem("Entity set 'TenderQuotationsContext.Ads'  is null.");
+          }
+            _context.Ads.Add(ad);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction("GetAd", new { id = ad.AdId }, ad);
         }
 
-        // DELETE: api/Users/5
+        // DELETE: api/Ads/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUser(int id)
+        public async Task<IActionResult> DeleteAd(int id)
         {
-            if (_context.Users == null)
+            if (_context.Ads == null)
             {
                 return NotFound();
             }
-            var user = await _context.Users.FindAsync(id);
-            if (user == null)
+            var ad = await _context.Ads.FindAsync(id);
+            if (ad == null)
             {
                 return NotFound();
             }
 
-            _context.Users.Remove(user);
+            _context.Ads.Remove(ad);
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
-        private bool UserExists(int id)
+        private bool AdExists(int id)
         {
-            return (_context.Users?.Any(e => e.UserId == id)).GetValueOrDefault();
+            return (_context.Ads?.Any(e => e.AdId == id)).GetValueOrDefault();
         }
     }
 }

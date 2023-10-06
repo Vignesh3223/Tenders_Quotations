@@ -59,6 +59,7 @@ namespace Tenders_Quotations.Controllers
                         Crn = user.Crn,
                         RoleId = user.RoleId,
                         Token = user.Token,
+                        ProfilePic = user.ProfilePic
                     };
                     return Ok(response1);
             }

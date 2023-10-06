@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -9,7 +10,7 @@ using Tenders_Quotations.Models;
 
 namespace Tenders_Quotations.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
     public class QuotationsController : ControllerBase
     {
@@ -47,6 +48,13 @@ namespace Tenders_Quotations.Controllers
             }
 
             return quotation;
+        }
+
+        [HttpGet("{tenderId}")]
+        public ActionResult<IEnumerable<Quotation>> GetQuote(int tenderId)
+        {
+            var data = _context.Quotations.Where(x => x.TenderId == tenderId).ToList();
+            return data;
         }
 
         // PUT: api/Quotations/5

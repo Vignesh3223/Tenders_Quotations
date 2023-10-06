@@ -27,7 +27,7 @@ public partial class User
 
     public string? Password { get; set; }
 
-    public byte[]? ProfilePic { get; set; }
+    public string? ProfilePic { get; set; }
 
     public int? RoleId { get; set; }
 
